@@ -2,15 +2,73 @@ import React, { useEffect, useState } from "react";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// Card style for UI sections
+/* ---------- UI STYLES ---------- */
+
+const pageStyle = {
+  fontFamily: "'Segoe UI', Tahoma, sans-serif",
+  background: "linear-gradient(135deg, #eef2f7, #f8fafc)",
+  minHeight: "100vh",
+  padding: "40px"
+};
+
+const containerStyle = {
+  maxWidth: "1100px",
+  margin: "auto"
+};
+
+const headerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "30px"
+};
+
+const titleStyle = {
+  fontSize: "28px",
+  fontWeight: "600"
+};
+
+const liveBadge = {
+  color: "#0f9d58",
+  fontWeight: "600",
+  fontSize: "14px"
+};
+
+const gridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+  gap: "20px"
+};
+
 const cardStyle = {
   background: "#ffffff",
+  borderRadius: "14px",
   padding: "20px",
-  borderRadius: "12px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-  marginBottom: "25px",
-  transition: "transform 0.3s ease"
+  boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+  transition: "transform 0.3s ease, box-shadow 0.3s ease"
 };
+
+const cardHover = e => {
+  e.currentTarget.style.transform = "translateY(-4px)";
+  e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.12)";
+};
+
+const cardLeave = e => {
+  e.currentTarget.style.transform = "translateY(0)";
+  e.currentTarget.style.boxShadow = "0 6px 18px rgba(0,0,0,0.08)";
+};
+
+const labelStyle = { color: "#666", fontSize: "13px" };
+const valueStyle = { fontSize: "18px", fontWeight: "600" };
+
+const footerStyle = {
+  marginTop: "40px",
+  textAlign: "center",
+  fontSize: "13px",
+  color: "#777"
+};
+
+/* ---------- APP ---------- */
 
 function App() {
   const [bus, setBus] = useState(null);
@@ -23,19 +81,19 @@ function App() {
     const fetchData = () => {
       fetch(`${API_URL}/api/bus/location`)
         .then(res => res.json())
-        .then(data => setBus(data));
+        .then(setBus);
 
       fetch(`${API_URL}/api/bus/eta`)
         .then(res => res.json())
-        .then(data => setEta(data));
+        .then(setEta);
 
       fetch(`${API_URL}/api/route`)
         .then(res => res.json())
-        .then(data => setRoute(data));
+        .then(setRoute);
 
       fetch(`${API_URL}/api/bus/status`)
         .then(res => res.json())
-        .then(data => setStatus(data));
+        .then(setStatus);
 
       setLastUpdated(new Date());
     };
@@ -47,84 +105,74 @@ function App() {
 
   const statusColor =
     status?.status === "Running"
-      ? "green"
+      ? "#0f9d58"
       : status?.status === "Delayed"
-      ? "orange"
-      : "red";
+      ? "#f4b400"
+      : "#d93025";
 
   return (
-    <div
-      style={{
-        fontFamily: "Arial",
-        background: "#f4f6f8",
-        minHeight: "100vh",
-        padding: "40px"
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "900px",
-          margin: "auto",
-          background: "#ffffff",
-          padding: "30px",
-          borderRadius: "16px"
-        }}
-      >
-        <h1>🚌 Real-Time Public Transport Tracking System</h1>
-        <p style={{ color: "green", fontWeight: "bold" }}>
-          ● Live Tracking Active
-        </p>
-
-        {/* Live Bus Tracking */}
-        <div style={cardStyle}>
-          <h3>🚌 Live Bus Tracking (Mock GPS)</h3>
-          {bus && (
-            <>
-              <p><strong>Bus ID:</strong> {bus.busId}</p>
-              <p><strong>Latitude:</strong> {bus.latitude.toFixed(6)}</p>
-              <p><strong>Longitude:</strong> {bus.longitude.toFixed(6)}</p>
-            </>
-          )}
+    <div style={pageStyle}>
+      <div style={containerStyle}>
+        {/* HEADER */}
+        <div style={headerStyle}>
+          <div style={titleStyle}>🚌 Public Transport Tracking Dashboard</div>
+          <div style={liveBadge}>● LIVE</div>
         </div>
 
-        {/* Bus Status */}
-        <div style={cardStyle}>
-          <h3>🚌 Bus Status</h3>
-          {status ? (
-            <p>
-              <strong>Status:</strong>{" "}
-              <span style={{ color: statusColor, fontWeight: "bold" }}>
-                {status.status}
-              </span>
+        {/* METRICS GRID */}
+        <div style={gridStyle}>
+          {/* BUS INFO */}
+          <div style={cardStyle} onMouseEnter={cardHover} onMouseLeave={cardLeave}>
+            <p style={labelStyle}>Bus</p>
+            <p style={valueStyle}>{bus ? `Bus #${bus.busId}` : "Loading..."}</p>
+            {bus && (
+              <>
+                <p style={labelStyle}>Latitude</p>
+                <p>{bus.latitude.toFixed(6)}</p>
+                <p style={labelStyle}>Longitude</p>
+                <p>{bus.longitude.toFixed(6)}</p>
+              </>
+            )}
+          </div>
+
+          {/* STATUS */}
+          <div style={cardStyle} onMouseEnter={cardHover} onMouseLeave={cardLeave}>
+            <p style={labelStyle}>Bus Status</p>
+            <p style={{ ...valueStyle, color: statusColor }}>
+              {status ? status.status : "Checking..."}
             </p>
-          ) : (
-            <p>Loading bus status...</p>
-          )}
+          </div>
+
+          {/* ETA */}
+          <div style={cardStyle} onMouseEnter={cardHover} onMouseLeave={cardLeave}>
+            <p style={labelStyle}>Estimated Arrival</p>
+            {eta ? (
+              <>
+                <p style={valueStyle}>{eta.etaMinutes} min</p>
+                <p style={labelStyle}>Distance</p>
+                <p>{eta.remainingDistance} km</p>
+                <p style={labelStyle}>Avg Speed</p>
+                <p>{eta.averageSpeed} km/h</p>
+              </>
+            ) : (
+              <p>Calculating...</p>
+            )}
+          </div>
         </div>
 
-        {/* ETA */}
-        <div style={cardStyle}>
-          <h3>⏱️ Estimated Arrival Time (ETA)</h3>
-          {eta && eta.etaMinutes ? (
-            <>
-              <p><strong>Remaining Distance:</strong> {eta.remainingDistance} km</p>
-              <p><strong>Average Speed:</strong> {eta.averageSpeed} km/h</p>
-              <p><strong>ETA:</strong> {eta.etaMinutes} minutes</p>
-            </>
-          ) : (
-            <p>Calculating ETA...</p>
-          )}
-        </div>
-
-        {/* Route & Stops */}
-        <div style={cardStyle}>
+        {/* ROUTE CARD */}
+        <div
+          style={{ ...cardStyle, marginTop: "25px" }}
+          onMouseEnter={cardHover}
+          onMouseLeave={cardLeave}
+        >
           <h3>🧭 Route & Stops</h3>
           {route ? (
             <>
-              <p><strong>Route:</strong> {route.routeName}</p>
+              <p><strong>{route.routeName}</strong></p>
               <ul>
-                {route.stops.map((stop, index) => (
-                  <li key={index}>{stop}</li>
+                {route.stops.map((stop, i) => (
+                  <li key={i}>{stop}</li>
                 ))}
               </ul>
             </>
@@ -133,36 +181,26 @@ function App() {
           )}
         </div>
 
-        {/* Admin Dashboard */}
-        <div style={cardStyle}>
-          <h3>🧑‍💼 Admin Dashboard</h3>
+        {/* ADMIN DASHBOARD */}
+        <div
+          style={{ ...cardStyle, marginTop: "25px" }}
+          onMouseEnter={cardHover}
+          onMouseLeave={cardLeave}
+        >
+          <h3>🧑‍💼 Admin Panel</h3>
           <p><strong>Active Buses:</strong> 1</p>
-          <p><strong>Bus Status:</strong> {status ? status.status : "Checking..."}</p>
-          <p><strong>Average Speed:</strong> {eta ? eta.averageSpeed : "--"} km/h</p>
-          <p>
-            <strong>System Health:</strong>{" "}
-            <span style={{ color: "green" }}>Online</span>
-          </p>
-
+          <p><strong>System Health:</strong> <span style={{ color: "#0f9d58" }}>Online</span></p>
           {lastUpdated && (
-            <p
-              style={{
-                background: "#e8f5e9",
-                padding: "8px 14px",
-                borderRadius: "20px",
-                display: "inline-block",
-                fontSize: "14px"
-              }}
-            >
-              ⏱ Last Updated: {lastUpdated.toLocaleTimeString()}
+            <p style={labelStyle}>
+              Last Updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
         </div>
 
-        <hr />
-        <p style={{ textAlign: "center", color: "#777", fontSize: "14px" }}>
+        {/* FOOTER */}
+        <div style={footerStyle}>
           © 2025 Real-Time Public Transport Tracking System | Minor Project
-        </p>
+        </div>
       </div>
     </div>
   );
