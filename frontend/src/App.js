@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: "40px", fontFamily: "Arial" }}>
+      <h1>🚌 Real-Time Public Transport Tracking System</h1>
+
+      <p>
+        This system provides real-time tracking of public buses for small cities.
+        Commuters can view live bus locations, estimated arrival times, and route
+        information.
+      </p>
+
+      <h3>Features</h3>
+      <ul>
+        <li>Live Bus Location Tracking</li>
+        <li>Estimated Arrival Time (ETA)</li>
+        <li>Route and Stop Information</li>
+        <li>Admin Monitoring Dashboard</li>
+      </ul>
+
+      <h3>Backend Status</h3>
+      <a
+        href="https://transport-tracking-backend.onrender.com"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Check Backend Health
+      </a>
+
+      <p style={{ marginTop: "40px", color: "gray" }}>
+        Minor Project | Computer Science Engineering
+      </p>
     </div>
   );
 }
