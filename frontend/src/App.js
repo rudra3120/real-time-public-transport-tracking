@@ -89,6 +89,41 @@ function App() {
 ) : (
   <p>Loading route information...</p>
 )}
+<hr style={{ margin: "40px 0" }} />
+
+<h2>🧑‍💼 Admin Dashboard</h2>
+
+<div style={{
+  border: "1px solid #ccc",
+  padding: "20px",
+  borderRadius: "8px",
+  maxWidth: "400px"
+}}>
+  <p><strong>Active Buses:</strong> 1</p>
+
+  <p>
+    <strong>Bus Status:</strong>{" "}
+    {status ? status.status : "Checking..."}
+  </p>
+
+  <p>
+    <strong>Average Speed:</strong>{" "}
+    {eta ? eta.averageSpeed : "--"} km/h
+  </p>
+
+  <p>
+    <strong>System Health:</strong>{" "}
+    <span style={{ color: "green" }}>Online</span>
+  </p>
+
+  {lastUpdated && (
+    <p>
+      <strong>Last Update:</strong>{" "}
+      {lastUpdated.toLocaleTimeString()}
+    </p>
+  )}
+</div>
+
 <h3>⏱️ Last Updated</h3>
 
 {lastUpdated ? (
