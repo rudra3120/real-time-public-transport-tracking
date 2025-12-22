@@ -7,6 +7,8 @@ function App() {
   const [eta, setEta] = useState(null);
   const [route, setRoute] = useState(null);
   const [status, setStatus] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(null);
+
 
 
 
@@ -26,6 +28,8 @@ function App() {
       fetch(`${API_URL}/api/bus/status`)
   .then(res => res.json())
   .then(data => setStatus(data));
+  setLastUpdated(new Date());
+
 
     };
 
@@ -85,6 +89,14 @@ function App() {
 ) : (
   <p>Loading route information...</p>
 )}
+<h3>⏱️ Last Updated</h3>
+
+{lastUpdated ? (
+  <p>{lastUpdated.toLocaleTimeString()}</p>
+) : (
+  <p>Updating...</p>
+)}
+
 
       <p style={{ marginTop: "40px", color: "gray" }}>
         Live Tracking & ETA Demo | Minor Project
