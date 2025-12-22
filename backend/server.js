@@ -8,21 +8,50 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Test route
+/* ---------------- BASIC ROUTES ---------------- */
+
+// Root test route
 app.get("/", (req, res) => {
   res.send("Backend is running successfully");
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-// Backend status API (for frontend integration)
+// Backend status API
 app.get("/api/status", (req, res) => {
   res.json({
     status: "OK",
     message: "Backend is live and connected",
     timestamp: new Date()
   });
+});
+
+/* ---------------- MOCK BUS TRACKING ---------------- */
+
+// Mock GPS data
+let busLocation = {
+  busId: 1,
+  latitude: 23.2599,
+  longitude: 77.4126
+};
+
+// Get live bus location
+app.get("/api/bus/location", (req, res) => {
+  res.json(busLocation);
+});
+
+// Simulate bus movement
+app.post("/api/bus/update", (req, res) => {
+  busLocation.latitude += 0.0001;
+  busLocation.longitude += 0.0001;
+
+  res.json({
+    message: "Bus location updated",
+    busLocation
+  });
+});
+
+/* ---------------- START SERVER (LAST) ---------------- */
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
