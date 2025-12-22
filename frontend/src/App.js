@@ -5,6 +5,8 @@ const API_URL = process.env.REACT_APP_API_URL;
 function App() {
   const [bus, setBus] = useState(null);
   const [eta, setEta] = useState(null);
+  const [route, setRoute] = useState(null);
+
 
   useEffect(() => {
     const fetchData = () => {
@@ -15,6 +17,11 @@ function App() {
       fetch(`${API_URL}/api/bus/eta`)
         .then(res => res.json())
         .then(data => setEta(data));
+
+      fetch(`${API_URL}/api/route`)
+        .then(res => res.json())
+        .then(data => setRoute(data));
+
     };
 
     fetchData();
@@ -46,6 +53,20 @@ function App() {
   </>
 ) : (
   <p>Calculating ETA...</p>
+)}
+<h3>🧭 Route & Stops</h3>
+
+{route ? (
+  <>
+    <p><strong>Route:</strong> {route.routeName}</p>
+    <ul>
+      {route.stops.map((stop, index) => (
+        <li key={index}>{stop}</li>
+      ))}
+    </ul>
+  </>
+) : (
+  <p>Loading route information...</p>
 )}
 
       <p style={{ marginTop: "40px", color: "gray" }}>
