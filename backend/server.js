@@ -18,3 +18,11 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+// Backend status API (for frontend integration)
+app.get("/api/status", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Backend is live and connected",
+    timestamp: new Date()
+  });
+});
