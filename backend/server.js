@@ -55,3 +55,23 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+// Mock remaining distance (in km)
+let remainingDistance = 5; // 5 km initially
+
+// ETA calculation API
+app.get("/api/bus/eta", (req, res) => {
+  const averageSpeed = 30; // km/h
+
+  // Reduce distance to simulate movement
+  if (remainingDistance > 0.5) {
+    remainingDistance -= 0.2;
+  }
+
+  const etaMinutes = (remainingDistance / averageSpeed) * 60;
+
+  res.json({
+    remainingDistance: remainingDistance.toFixed(2),
+    averageSpeed,
+    etaMinutes: etaMinutes.toFixed(1)
+  });
+});
