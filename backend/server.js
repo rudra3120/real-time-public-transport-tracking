@@ -86,6 +86,16 @@ app.get("/api/route", (req, res) => {
     ]
   });
 });
+// Bus status API
+let busStatus = "Running"; // Running | Delayed | Not in Service
+
+app.get("/api/bus/status", (req, res) => {
+  res.json({
+    busId: 1,
+    status: busStatus,
+    lastUpdated: new Date()
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
