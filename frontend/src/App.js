@@ -6,6 +6,8 @@ function App() {
   const [bus, setBus] = useState(null);
   const [eta, setEta] = useState(null);
   const [route, setRoute] = useState(null);
+  const [status, setStatus] = useState(null);
+
 
 
   useEffect(() => {
@@ -21,6 +23,9 @@ function App() {
       fetch(`${API_URL}/api/route`)
         .then(res => res.json())
         .then(data => setRoute(data));
+      fetch(`${API_URL}/api/bus/status`)
+  .then(res => res.json())
+  .then(data => setStatus(data));
 
     };
 
@@ -43,6 +48,18 @@ function App() {
           <p><strong>Longitude:</strong> {bus.longitude.toFixed(6)}</p>
         </>
       )}
+<h3>🚌 Bus Status</h3>
+
+{status ? (
+  <p>
+    <strong>Status:</strong>{" "}
+    {status.status === "Running" && "🟢 Running"}
+    {status.status === "Delayed" && "🟡 Delayed"}
+    {status.status === "Not in Service" && "🔴 Not in Service"}
+  </p>
+) : (
+  <p>Loading bus status...</p>
+)}
 
       <h3>Estimated Arrival Time (ETA)</h3>
       {eta && eta.etaMinutes ? (
