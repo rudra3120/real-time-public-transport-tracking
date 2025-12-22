@@ -72,6 +72,21 @@ app.get("/api/bus/eta", (req, res) => {
     etaMinutes: etaMinutes.toFixed(1)
   });
 });
+// Route and stop information API
+app.get("/api/route", (req, res) => {
+  res.json({
+    routeId: "R-101",
+    routeName: "City Center to Railway Station",
+    stops: [
+      "City Center",
+      "Market Square",
+      "Bus Stand",
+      "Central Mall",
+      "Railway Station"
+    ]
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
