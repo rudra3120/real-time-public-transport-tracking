@@ -38,16 +38,15 @@ function App() {
       )}
 
       <h3>Estimated Arrival Time (ETA)</h3>
-
-      {eta ? (
-        <>
-          <p><strong>Remaining Distance:</strong> {eta.remainingDistance} km</p>
-          <p><strong>Average Speed:</strong> {eta.averageSpeed} km/h</p>
-          <p><strong>ETA:</strong> {eta.etaMinutes} minutes</p>
-        </>
-      ) : (
-        <p>Calculating ETA...</p>
-      )}
+      {eta && eta.etaMinutes ? (
+  <>
+    <p><strong>Remaining Distance:</strong> {eta.remainingDistance} km</p>
+    <p><strong>Average Speed:</strong> {eta.averageSpeed} km/h</p>
+    <p><strong>ETA:</strong> {eta.etaMinutes} minutes</p>
+  </>
+) : (
+  <p>Calculating ETA...</p>
+)}
 
       <p style={{ marginTop: "40px", color: "gray" }}>
         Live Tracking & ETA Demo | Minor Project
