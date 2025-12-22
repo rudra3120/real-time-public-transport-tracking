@@ -52,9 +52,6 @@ app.post("/api/bus/update", (req, res) => {
 /* ---------------- START SERVER (LAST) ---------------- */
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 // Mock remaining distance (in km)
 let remainingDistance = 5; // 5 km initially
 
@@ -74,4 +71,7 @@ app.get("/api/bus/eta", (req, res) => {
     averageSpeed,
     etaMinutes: etaMinutes.toFixed(1)
   });
+});
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
