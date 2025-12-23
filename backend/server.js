@@ -8,7 +8,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ---------------- BASIC ROUTES ---------------- */
+// Store live bus location (real GPS)
+let busLocation = {
+  busId: 1,
+  latitude: 23.2599,
+  longitude: 77.4126,
+  timestamp: new Date()
+};
 
 // Root test route
 app.get("/", (req, res) => {
@@ -24,42 +30,31 @@ app.get("/api/status", (req, res) => {
   });
 });
 
-/* ---------------- MOCK BUS TRACKING ---------------- */
+// Receive real GPS from phone
+app.post("/api/bus/location", (req, res) => {
+  const { busId, latitude, longitude } = req.body;
 
-// Mock GPS data
-let busLocation = {
-  busId: 1,
-  latitude: 23.2599,
-  longitude: 77.4126
-};
+  busLocation = {
+    busId,
+    latitude,
+    longitude,
+    timestamp: new Date()
+  };
 
-// Get live bus location
+  res.json({ message: "Location updated successfully" });
+});
+
+// Send GPS to frontend
 app.get("/api/bus/location", (req, res) => {
   res.json(busLocation);
 });
 
-// Simulate bus movement
-app.post("/api/bus/update", (req, res) => {
-  busLocation.latitude += 0.0001;
-  busLocation.longitude += 0.0001;
-
-  res.json({
-    message: "Bus location updated",
-    busLocation
-  });
-});
-
-/* ---------------- START SERVER (LAST) ---------------- */
-
-const PORT = process.env.PORT || 5000;
-// Mock remaining distance (in km)
-let remainingDistance = 5; // 5 km initially
-
 // ETA calculation API
-app.get("/api/bus/eta", (req, res) => {
-  const averageSpeed = 30; // km/h
+let remainingDistance = 5;
 
-  // Reduce distance to simulate movement
+app.get("/api/bus/eta", (req, res) => {
+  const averageSpeed = 30;
+
   if (remainingDistance > 0.5) {
     remainingDistance -= 0.2;
   }
@@ -72,7 +67,8 @@ app.get("/api/bus/eta", (req, res) => {
     etaMinutes: etaMinutes.toFixed(1)
   });
 });
-// Route and stop information API
+
+// Route API
 app.get("/api/route", (req, res) => {
   res.json({
     routeId: "R-101",
@@ -86,17 +82,18 @@ app.get("/api/route", (req, res) => {
     ]
   });
 });
-// Bus status API
-let busStatus = "Running"; // Running | Delayed | Not in Service
 
+// Bus status API
 app.get("/api/bus/status", (req, res) => {
   res.json({
     busId: 1,
-    status: busStatus,
+    status: "Running",
     lastUpdated: new Date()
   });
 });
 
+// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
