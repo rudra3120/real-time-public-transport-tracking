@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import "./leafletFix";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -101,10 +104,10 @@ function App() {
           <div style={liveBadge}>LIVE</div>
         </div>
 
-        {/* MAIN GRID */}
+        {/* METRIC GRID */}
         <div style={gridStyle}>
 
-          {/* BUS CARD */}
+          {/* BUS INFO */}
           <div
             style={{ ...cardBase, background: "linear-gradient(135deg, #3b82f6, #2563eb)" }}
             onMouseEnter={hoverIn}
@@ -122,7 +125,7 @@ function App() {
             )}
           </div>
 
-          {/* STATUS CARD */}
+          {/* STATUS */}
           <div
             style={{ ...cardBase, background: "linear-gradient(135deg, #10b981, #059669)" }}
             onMouseEnter={hoverIn}
@@ -134,7 +137,7 @@ function App() {
             </p>
           </div>
 
-          {/* ETA CARD */}
+          {/* ETA */}
           <div
             style={{ ...cardBase, background: "linear-gradient(135deg, #f97316, #ea580c)" }}
             onMouseEnter={hoverIn}
@@ -154,6 +157,42 @@ function App() {
             )}
           </div>
 
+        </div>
+
+        {/* LIVE MAP */}
+        <div
+          style={{
+            marginTop: "30px",
+            background: "#ffffff",
+            borderRadius: "16px",
+            padding: "20px",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.15)"
+          }}
+        >
+          <h3 style={{ color: "#2d3748" }}>🗺️ Live Bus Location</h3>
+
+          {bus ? (
+            <MapContainer
+              center={[bus.latitude, bus.longitude]}
+              zoom={15}
+              style={{ height: "400px", width: "100%", borderRadius: "12px" }}
+            >
+              <TileLayer
+                attribution="© OpenStreetMap contributors"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+
+              <Marker position={[bus.latitude, bus.longitude]}>
+                <Popup>
+                  🚌 Bus #{bus.busId} <br />
+                  Lat: {bus.latitude.toFixed(4)} <br />
+                  Lng: {bus.longitude.toFixed(4)}
+                </Popup>
+              </Marker>
+            </MapContainer>
+          ) : (
+            <p>Loading map...</p>
+          )}
         </div>
 
         {/* ROUTE */}
